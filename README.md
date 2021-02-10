@@ -5,11 +5,19 @@
 * extend pycuda.elementwise.Elementwise class to enable broadcasting
 * extend pycuda.gpuarray.GPUArray to use the modified Elementwise
 
+## Restrictions
+
+* The first parameter should have the full (broadcasted) shape
+  (This is not checked. If it has a smaller size, only a part will be evaluated)
+
+* Parameters which don't have the full shape should be read-only (this is natural, right?)
+
 ## How it works
 
 You can find this example in [test/test_broadcasting.py](test/test_broadcasting.py#L47)
 
 Import ElementwiseKernel from src and use like this
+
 ```python3
 ElementwiseKernel(
     "double *out, double *a, double *b, double *c",
@@ -17,6 +25,7 @@ ElementwiseKernel(
     broadcasting=True  # or False
 )
 ```
+
 Actual kernel function when `broadcasting=False`
 (The `broadcasting` is `False` by default, which should be the same as original class):
 
@@ -57,8 +66,6 @@ __global__ void kernel(double *out, double *a, double *b, double *c, unsigned lo
     }
 }
 ```
-
-
 
 ## Reference
 
