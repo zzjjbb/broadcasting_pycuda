@@ -10,13 +10,13 @@
 * The first parameter should have the full (broadcasted) shape
   (This is not checked. If it has a smaller size, only a part will be evaluated)
 
-* Parameters which don't have the full shape should be read-only (this is natural, right?)
+* Parameters which don't have the full shape should be read-only (This is natural, right?)
 
 ## How it works
 
-You can find this example in [test/test_broadcasting.py](test/test_broadcasting.py#L47)
+You can find this example in [test/test_broadcasting.py](test/test_broadcasting.py#L37)
 
-Import ElementwiseKernel from src and use like this
+Import `ElementwiseKernel` from [src](src) and use like this
 
 ```python3
 ElementwiseKernel(
