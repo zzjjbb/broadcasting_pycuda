@@ -1,0 +1,8 @@
+## Changelog
+
+### 0.0.1
+
+Initial version. Features:
+
+* extend pycuda.elementwise.Elementwise class to enable broadcasting
+* extend pycuda.gpuarray.GPUArray to use the modified Elementwise

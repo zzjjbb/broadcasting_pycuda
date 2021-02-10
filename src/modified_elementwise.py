@@ -1,6 +1,6 @@
 # Modified from PyCUDA (version 2020.1)
-from functools import lru_cache
 from pycuda import elementwise
+from pycuda.tools import context_dependent_memoize
 import pycuda.tools
 import numpy as np
 from . import broadcast
@@ -28,12 +28,12 @@ def parse_c_arg(c_arg):
     return parse_c_arg_backend(c_arg, ScalarArg, VectorArg)
 
 
-@lru_cache
-def module_builder(_use_range, *args, **kwargs):
+@context_dependent_memoize
+def module_builder(_use_range, *args):
     if _use_range:
-        return get_elwise_range_module(*args, **kwargs)
+        return get_elwise_range_module(*args)
     else:
-        return get_elwise_module(*args, **kwargs)
+        return get_elwise_module(*args)
 
 
 def get_elwise_kernel_and_types(arguments, operation, call_args,
@@ -77,8 +77,10 @@ def get_elwise_kernel_and_types(arguments, operation, call_args,
             operation = bc_codes[1] + operation
     arguments = tuple(arguments)
 
-    mod = module_builder(use_range, arguments, operation, name,
-                         keep, options, **kwargs)
+    mod = module_builder(use_range, arguments, operation, name, keep, options,
+                         kwargs.get("preamble", ""),
+                         kwargs.get("loop_prep", ""),
+                         kwargs.get("after_loop", ""))
 
     func = mod.get_function(name)
     func.prepare("".join(arg.struct_char for arg in arguments))
